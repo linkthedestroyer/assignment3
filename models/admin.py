@@ -9,6 +9,7 @@ class CardAdmin(admin.ModelAdmin):
     list_display = [
         "card_name",
         "inventory",
+        "card_status"
     ]
 
 
@@ -32,12 +33,12 @@ class LoanerAdmin(admin.ModelAdmin):
 
 class Loan_RequestAdmin(admin.ModelAdmin):
     model = Loan_Request
-    list_display = ["requestor_user", "loaner_user"]
+    list_display = ["loan_request_status", "requestor_user", "loaner_user"]
 
 
 class Loaned_CardAdmin(admin.ModelAdmin):
     model = Loaned_Card
-    list_display = ["card", "inventory", "loaned_inventory"]
+    list_display = ["card", "loan_request", "inventory", "loaned_inventory"]
 
 
 class Loaned_InventoryAdmin(admin.ModelAdmin):
