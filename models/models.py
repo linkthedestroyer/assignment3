@@ -73,7 +73,7 @@ class Loaned_Inventory(models.Model):
     loaned_inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
-    loaned_inventory_loanee_user = models.ForeignKey(Loanee, on_delete=models.CASCADE, verbose_name="test")
+    loaned_inventory_loanee_user = models.ForeignKey(Loanee, on_delete=models.CASCADE)
     loaned_inventory_loaner_user = models.ForeignKey(Loaner, on_delete=models.CASCADE)
 
     def __str__(self):
