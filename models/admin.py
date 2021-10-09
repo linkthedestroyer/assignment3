@@ -1,56 +1,46 @@
 from django.contrib import admin
 
-from .models import (Card, Inventory, Loan_Request, Loaned_Card,
-                     Loaned_Inventory, Loanee, Loaner)
+from .models import Card, Inventory, Loan_Request, Loaned_Card, Loaned_Inventory
+
+
+class InventoryAdmin(admin.ModelAdmin):
+    model = Inventory
+    list_display = ["inventory_name", "inventory_owner", "inventory_view_status"]
 
 
 class CardAdmin(admin.ModelAdmin):
     model = Card
     list_display = [
         "card_name",
+        "card_status",
+        "card_set",
+        "card_set",
+        "card_cost",
+        "card_color",
+        "card_type",
+        "card_text",
         "inventory",
-        "card_status"
     ]
-
-
-class InventoryAdmin(admin.ModelAdmin):
-    model = Inventory
-    list_display = [
-        "inventory_name",
-        "inventory_owner",
-    ]
-
-
-class LoaneeAdmin(admin.ModelAdmin):
-    model = Loanee
-    list_display = ["user"]
-
-
-class LoanerAdmin(admin.ModelAdmin):
-    model = Loaner
-    list_display = ["user"]
-
-
-class Loan_RequestAdmin(admin.ModelAdmin):
-    model = Loan_Request
-    list_display = ["loan_request_status", "requestor_user", "loaner_user"]
-
-
-class Loaned_CardAdmin(admin.ModelAdmin):
-    model = Loaned_Card
-    list_display = ["card", "loan_request", "inventory", "loaned_inventory"]
 
 
 class Loaned_InventoryAdmin(admin.ModelAdmin):
     model = Loaned_Inventory
-    list_display = ["loaned_inventory_name", "loaned_inventory_loanee_user", "loaned_inventory_loaner_user"]
+    list_display = ["loaned_inventory_name", "loaned_inventory_owner", "loaned_inventory_view_status"]
+
+
+class Loan_RequestAdmin(admin.ModelAdmin):
+    model = Loan_Request
+    list_display = ["requestor", "loaner_inventory", "loanee_inventory", "loan_request_status"]
+
+
+class Loaned_CardAdmin(admin.ModelAdmin):
+    model = Loaned_Card
+    list_display = ["card", "inventory", "loan_request", "loaned_inventory", "returned_date"]
 
 
 # Register your models here.
 admin.site.register(Card, CardAdmin)
 admin.site.register(Inventory, InventoryAdmin)
-admin.site.register(Loanee, LoaneeAdmin)
-admin.site.register(Loaner, LoanerAdmin)
 admin.site.register(Loan_Request, Loan_RequestAdmin)
 admin.site.register(Loaned_Inventory, Loaned_InventoryAdmin)
 admin.site.register(Loaned_Card, Loaned_CardAdmin)
