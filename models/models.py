@@ -2,12 +2,12 @@ from django.contrib.auth import get_user, get_user_model
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch.dispatcher import receiver
-from users.models import MagicUser
+from users.models import Magic_User
 
 
 class Inventory(models.Model):
     inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
-    inventory_owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    inventory_owner = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
     inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
@@ -40,13 +40,13 @@ class Card(models.Model):
     card_color = models.CharField(max_length=20, blank=False, null=False, default=" ")
     card_type = models.CharField(max_length=50, blank=False, null=False, default=" ")
     card_text = models.CharField(max_length=200, blank=False, null=False, default=" ")
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Card=[card_name={},card_status={},card_set={},card_set={},card_cost={},card_color={},card_type={},card_text={},inventory={}]".format(
+        return "Card=[card_name={},card_status={},card_rarity={},card_set={},card_cost={},card_color={},card_type={},card_text={},inventory={}]".format(
             self.card_name,
             self.card_status,
-            self.card_set,
+            self.card_rarity,
             self.card_set,
             self.card_cost,
             self.card_color,
@@ -58,7 +58,7 @@ class Card(models.Model):
 
 class Loaned_Inventory(models.Model):
     loaned_inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
-    loaned_inventory_owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    loaned_inventory_owner = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
     loaned_inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
@@ -70,9 +70,9 @@ class Loaned_Inventory(models.Model):
 
 
 class Loan_Request(models.Model):
-    requestor = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    loaner_inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    loanee_inventory = models.ForeignKey(Loaned_Inventory, on_delete=models.CASCADE)
+    requestor = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
+    loaner_inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
+    loanee_inventory = models.ForeignKey(Loaned_Inventory, null=True, on_delete=models.CASCADE)
     loan_request_status = models.CharField(
         max_length=50,
         blank=False,
@@ -88,10 +88,10 @@ class Loan_Request(models.Model):
 
 
 class Loaned_Card(models.Model):
-    card = models.ForeignKey(Card, on_delete=models.CASCADE)
-    inventory = models.ForeignKey(Inventory, on_delete=models.CASCADE)
-    loan_request = models.ForeignKey(Loan_Request, on_delete=models.CASCADE)
-    loaned_inventory = models.ForeignKey(Loaned_Inventory, on_delete=models.CASCADE)
+    card = models.ForeignKey(Card, null=True, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
+    loan_request = models.ForeignKey(Loan_Request, null=True, on_delete=models.CASCADE)
+    loaned_inventory = models.ForeignKey(Loaned_Inventory, null=True, on_delete=models.CASCADE)
     returned_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
@@ -100,7 +100,7 @@ class Loaned_Card(models.Model):
         )
 
 
-@receiver(post_save, sender=MagicUser)
+@receiver(post_save, sender=Magic_User)
 def create_required_tables(sender, instance, created, **kwargs):
     if created:
         Inventory.create(instance.username + "'s inventory", instance).save()

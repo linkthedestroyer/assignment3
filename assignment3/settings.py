@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'linkthedestroyer.pythonanywhere.com']
 
-AUTH_USER_MODEL = "users.MagicUser"
+AUTH_USER_MODEL = "users.magic_user"
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "users",
     "models",
+    "core",
 ]
 
 MIDDLEWARE = [
@@ -102,6 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

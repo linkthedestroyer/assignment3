@@ -1,0 +1,74 @@
+{
+	"data_array": [
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Akroan Jailer",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		},
+		{
+			"card_name": "Abu Ja'far",
+			"card_status": "UNUSED",
+			"card_rarity": "rare",
+			"card_set": "jou",
+			"card_cost": "{W}{U}",
+			"card_color": "WU",
+			"card_type": "Creature — Human Soldier",
+			"card_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)"
+		}
+	]
+}

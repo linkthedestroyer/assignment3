@@ -1,0 +1,49 @@
+{
+	"data_array": [
+		{
+			"username": "link",
+			"first_name": "Jeff",
+			"last_name": "Thompson",
+			"email": "linkthedestroyer@gmail.com",
+			"is_staff": true,
+			"phone_number": "4023017427",
+			"password": "l1nkr8ng"
+		},
+		{
+			"username": "instructor",
+			"first_name": "Instructor",
+			"last_name": "Instructor",
+			"email": "groyce@unomaha.edu",
+			"is_staff": true,
+			"phone_number": "5555555556",
+			"password": "gounomavs1a"
+		},
+		{
+			"username": "nabistay",
+			"first_name": "Steve",
+			"last_name": "Baker",
+			"email": "linkthedestroyer@gmail.com",
+			"is_staff": false,
+			"phone_number": "4025555555",
+			"password": "goun1m2vs1a"
+		},
+		{
+			"username": "chet",
+			"first_name": "Chet",
+			"last_name": "Cyr",
+			"email": "linkthedestroyer@gmail.com",
+			"is_staff": false,
+			"phone_number": "4025555556",
+			"password": "goun3m4vs1a"
+		},
+		{
+			"username": "white_wolf",
+			"first_name": "Winter",
+			"last_name": "Soldier",
+			"email": "linkthedestroyer@gmail.com",
+			"is_staff": false,
+			"phone_number": "5555555555",
+			"password": "goun5m6vs1a"
+		}
+	]
+}
