@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block title %}User Inventory{% endblock title %}
+
+{% block content %}
+<div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
+    <h1 class="display-4">Your Inventory</h1>
+    <a class="btn btn-primary" role="button" href="{% url 'edit_user_inventory' %}">Edit Inventory</a>
+    <a class="btn btn-success" role="button" href="">Add Cards</a>
+    <table style="margin-left: 3px; margin-top: 10px;">
+        <tbody>
+            <tr>
+                <td>Inventory Name:</td>
+                <td>{{user_inventory.inventory_name}}</td>
+            </tr>
+            <tr>
+                <td>Current Status:</td>
+                <td>{{user_inventory.inventory_view_status | displayEnum}}</td>
+            </tr>
+            <tr>
+                <td>Cards in Inventory:</td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="border-collapse: separate; border-spacing: 3px;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Rarity</th>
+                <th>Set</th>
+                <th>Cost</th>
+                <th>Color</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for card in user_inventory.card_set.all %}
+            <tr>
+                <td>{{card.card_name}}</td>
+                <td>{{card.card_status | displayEnum}}</td>
+                <td>{{card.card_rarity}}</td>
+                <td>{{card.card_set}}</td>
+                <td>{{card.card_cost}}</td>
+                <td>{{card.card_color}}</td>
+                <td>{{card.card_type}}</td>
+            </tr>
+            <tr>
+                <th style="vertical-align: top;">Text: </th>
+                <td colspan="6">{{card.card_text}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

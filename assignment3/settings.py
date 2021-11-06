@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "users",
     "models",
     "core",
+    "inventory",
 ]
 
 MIDDLEWARE = [
@@ -58,7 +59,7 @@ ROOT_URLCONF = "assignment3.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "core/templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -103,14 +104,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOGIN_URL = "/users/login"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
@@ -125,3 +128,20 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = "/static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static_collected")
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "linkthedestroyer@gmail.com"
+EMAIL_HOST_PASSWORD = "yqnnayegxrtalwah"
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "TestSite Team <noreply@example.com>"

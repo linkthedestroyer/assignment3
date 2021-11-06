@@ -1,0 +1,39 @@
+{
+    "data_array": [
+      {
+        "loaned_inventory_name": "dolore quis aliquip",
+        "loaned_inventory_owner_id": 1,
+        "loaned_inventory_view_status": "PUBLIC"
+      },
+      {
+        "loaned_inventory_name": "deserunt dolor ullamco",
+        "loaned_inventory_owner_id": 2,
+        "loaned_inventory_view_status": "PUBLIC"
+      },
+      {
+        "loaned_inventory_name": "commodo laborum mollit",
+        "loaned_inventory_owner_id": 3,
+        "loaned_inventory_view_status": "PRIVATE"
+      },
+      {
+        "loaned_inventory_name": "do in enim",
+        "loaned_inventory_owner_id": 4,
+        "loaned_inventory_view_status": "PUBLIC"
+      },
+      {
+        "loaned_inventory_name": "tempor voluptate Lorem",
+        "loaned_inventory_owner_id": 5,
+        "loaned_inventory_view_status": "PRIVATE"
+      },
+      {
+        "loaned_inventory_name": "laboris duis aliquip",
+        "loaned_inventory_owner_id": 6,
+        "loaned_inventory_view_status": "PRIVATE"
+      },
+      {
+        "loaned_inventory_name": "proident ut amet",
+        "loaned_inventory_owner_id": 7,
+        "loaned_inventory_view_status": "PRIVATE"
+      }
+    ]
+  }

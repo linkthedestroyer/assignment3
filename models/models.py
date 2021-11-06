@@ -12,6 +12,9 @@ class Inventory(models.Model):
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
 
+    class Meta:
+        verbose_name_plural = "Inventories"
+
     @classmethod
     def create(cls, inventory_name, user):
         inventory = cls(inventory_name=inventory_name, inventory_owner=user)
@@ -43,17 +46,30 @@ class Card(models.Model):
     inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Card=[card_name={},card_status={},card_rarity={},card_set={},card_cost={},card_color={},card_type={},card_text={},inventory={}]".format(
-            self.card_name,
-            self.card_status,
-            self.card_rarity,
-            self.card_set,
-            self.card_cost,
-            self.card_color,
-            self.card_type,
-            self.card_text,
-            self.inventory,
-        )
+        try:
+            return "Card=[card_name={},card_status={},card_rarity={},card_set={},card_cost={},card_color={},card_type={},card_text={},inventory={}]".format(
+                self.card_name,
+                self.card_status,
+                self.card_rarity,
+                self.card_set,
+                self.card_cost,
+                self.card_color,
+                self.card_type,
+                self.card_text,
+                self.inventory,
+            )
+        except:
+            return "Card=[card_name={},card_status={},card_rarity={},card_set={},card_cost={},card_color={},card_type={},card_text={},inventory={}]".format(
+                self.card_name,
+                self.card_status,
+                self.card_rarity,
+                self.card_set,
+                self.card_cost,
+                self.card_color,
+                self.card_type,
+                self.card_text,
+                self.inventory_id,
+            )
 
 
 class Loaned_Inventory(models.Model):
@@ -63,10 +79,18 @@ class Loaned_Inventory(models.Model):
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
 
+    class Meta:
+        verbose_name_plural = "Loaned Inventories"
+
     def __str__(self):
-        return "Loaned_Inventory=[loaned_inventory_name={},loaned_inventory_owner={},loaned_inventory_view_status={}]".format(
-            self.loaned_inventory_name, self.loaned_inventory_owner, self.loaned_inventory_view_status
-        )
+        try:
+            return "Loaned_Inventory=[loaned_inventory_name={},loaned_inventory_owner={},loaned_inventory_view_status={}]".format(
+                self.loaned_inventory_name, self.loaned_inventory_owner, self.loaned_inventory_view_status
+            )
+        except:
+            return "Loaned_Inventory=[loaned_inventory_name={},loaned_inventory_owner={},loaned_inventory_view_status={}]".format(
+                self.loaned_inventory_name, self.loaned_inventory_owner_id, self.loaned_inventory_view_status
+            )
 
 
 class Loan_Request(models.Model):
@@ -81,10 +105,19 @@ class Loan_Request(models.Model):
         choices=(("REQUESTED", "Requested"), ("ACCEPTED", "Accepted"), ("DECLINED", "Declined")),
     )
 
+
+    class Meta:
+        verbose_name_plural = "Loan Requests"
+
     def __str__(self):
-        return "Loan_Request=[requestor={},loaner_inventory={},loanee_inventory={},loan_request_status={}]".format(
-            self.requestor, self.loaner_inventory, self.loanee_inventory, self.loan_request_status
-        )
+        try:
+            return "Loan_Request=[requestor={},loaner_inventory={},loanee_inventory={},loan_request_status={}]".format(
+                self.requestor, self.loaner_inventory, self.loanee_inventory, self.loan_request_status
+            )
+        except:
+            return "Loan_Request=[requestor={},loaner_inventory={},loanee_inventory={},loan_request_status={}]".format(
+                self.requestor_id, self.loaner_inventory_id, self.loanee_inventory_id, self.loan_request_status
+            )
 
 
 class Loaned_Card(models.Model):
@@ -94,10 +127,18 @@ class Loaned_Card(models.Model):
     loaned_inventory = models.ForeignKey(Loaned_Inventory, null=True, on_delete=models.CASCADE)
     returned_date = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "Loaned Cards"
+
     def __str__(self):
-        return "Loaned_Card=[card={},inventory={},loan_request={},loaned_inventory={},returned_date={}]".format(
-            self.card, self.inventory, self.loan_request, self.loaned_inventory, self.returned_date
-        )
+        try:
+            return "Loaned_Card=[card={},inventory={},loan_request={},loaned_inventory={},returned_date={}]".format(
+                self.card, self.inventory, self.loan_request, self.loaned_inventory, self.returned_date
+            )
+        except:
+            return "Loaned_Card=[card={},inventory={},loan_request={},loaned_inventory={},returned_date={}]".format(
+                self.card_id, self.inventory_id, self.loan_request_id, self.loaned_inventory_id, self.returned_date
+            )
 
 
 @receiver(post_save, sender=Magic_User)

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Log In{% endblock title %}
+
+{% block content %}
+<form method="post">
+    <div class="jumbotron" style="padding-top: 20px; min-height: 300px; max-height: 400px; margin: auto; width: 350px; opacity: .8;">
+        <h1 class="display-4">Log In</h1>
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <p class="lead">
+            <button class="btn btn-primary ml-2" type="submit">Log In</button>
+        </p>
+        <p class="lead">
+            <a href="{% url 'password_reset' %}" class="btn btn-outline-primary ml-2">Reset Password</a>
+        </p>
+    </div>
+</form>
+{% endblock content %}

@@ -1,0 +1,8 @@
+{
+  data_array:['{{repeat(5, 7)}}', {
+    requestor_id: '{{integer(1, 7)}}',
+    loaner_inventory_id: function(tags) {var id = tags.integer(1,15); while(id === this.requestor_id) {id = tags.integer(1,15);} return id;},
+    loanee_inventory_id: function(tags) {return this.requestor_id;},    
+    loan_request_status: '{{random("REQUESTED","ACCEPTED","DECLINED")}}'
+  }]
+}

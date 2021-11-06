@@ -1,0 +1,7 @@
+{
+  data_array:['{{repeat(5, 7)}}', {
+    loaned_inventory_name: '{{lorem(3, "words")}}',
+    loaned_inventory_owner_id: '{{integer(0, 12)}}',
+    loaned_inventory_view_status: '{{random("PUBLIC", "PRIVATE")}}'
+  }]
+}

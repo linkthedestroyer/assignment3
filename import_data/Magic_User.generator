@@ -1,0 +1,26 @@
+{
+	data_array:['{{repeat(10, 15)}}', {
+		first_name: '{{firstName()}}',
+		last_name: '{{surname()}}',
+		username: function (tags) {
+		return this.first_name.substring(0,1) + '_' + this.last_name.substring(0,3) + tags.integer(0, 9) + tags.integer(0, 9) + tags.integer(0, 9);
+		},
+		password: function (tags) {
+		var result = '';
+		var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		var charactersLength = characters.length;
+		for (var i = 0; i < 8; i++) {
+		result += characters.charAt(Math.floor(Math.random() *
+		charactersLength));
+		}
+		return result;
+		},
+		email: '{{email()}}',
+		is_staff: false,
+		is_active: '{{bool()}}',
+		date_joined: '{{date(new Date(2005, 0, 1), new Date(2020, 11 , 1), "YYYY-MM-dd")}}',
+		last_login: '{{date(new Date(2021, 9, 1), new Date(2021, 9 , 30), "YYYY-MM-ddThh:mm:ss")}}',
+		phone: '{{phone()}}',
+		address: '{{integer(100, 999)}} {{street()}}, {{city()}}, {{state()}}, {{integer(0,9)}}{{integer(0,9)}}{{integer(0,9)}}{{integer(0,9)}}{{integer(0,9)}}'
+	}]
+}
