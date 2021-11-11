@@ -4,97 +4,90 @@
 
 {% block content %}
 <script>
-    function disableEnableImages() {
-        console.log('test');
-        var length = "{{ user_inventory.card_set.all| length }}";
-        var isEnable = false;
-        for (var index = 0; index < length; index++) {
-            var element = document.getElementById(`${index}img`);
-            var style = element.getAttribute('style');
-            if (style.indexOf('display') >= 0) {
-                element.setAttribute('style', 'width: 250px; padding-bottom: 20px;');
-                isEnable = true;
-            } else {
-                element.setAttribute('style', 'display: none;');
-                isEnable = false;
-            }
-        }
-        if (isEnable) {
-            var checkbox = document.getElementById('checkbox');
-            var att = document.createAttribute("checked");
-            checkbox.setAttributeNode(att);
-        } else {
-            var checkbox = document.getElementById('checkbox');
-            checkbox.removeAttribute('checked')
-        }
+  function disableEnableImages() {
+    console.log('test');
+    var length = "{{ user_inventory.card_set.all| length }}";
+    var isEnable = false;
+    for (var index = 0; index < length; index++) {
+      var element = document.getElementById(`${index}img`);
+      var style = element?.getAttribute('style');
+      if (style?.indexOf('display') >= 0) {
+        element?.setAttribute('style', 'width: 250px; padding-bottom: 20px;');
+        isEnable = true;
+      } else {
+        element?.setAttribute('style', 'display: none;');
+        isEnable = false;
+      }
     }
+  }
 </script>
-<div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
-    <h1 class="display-4">Your Inventory</h1>
-    <a class="btn btn-primary" role="button" href="{% url 'edit_user_inventory' %}">Edit Inventory</a>
-    <a class="btn btn-success" role="button" href="">Add Cards</a>
-    <table style="margin-left: 3px; margin-top: 10px;">
-        <tbody>
-            <tr>
-                <td>Inventory Name:</td>
-                <td>{{user_inventory.inventory_name}}</td>
-            </tr>
-            <tr>
-                <td>Current Status:</td>
-                <td>{{user_inventory.inventory_view_status | displayEnum}}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <label style="padding-left: 10px;" onclick="disableEnableImages()">
-                        <input id="checkbox" style="vertical-align: middle;" type="checkbox" checked>
-                        Show images
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>Cards in Inventory:</td>
-            </tr>
-        </tbody>
-    </table>
-    <table style="border-collapse: separate; border-spacing: 3px;">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Rarity</th>
-                <th>Set</th>
-                <th>Cost</th>
-                <th>Color</th>
-                <th>Type</th>
-                <th># of Cards</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for card in user_inventory.consolidated_cards %}
-            <tr>
-                <td>{{card.card_name}}</td>
-                <td>{{card.card_status | displayEnum}}</td>
-                <td>{{card.card_rarity}}</td>
-                <td>{{card.card_set}}</td>
-                <td>{{card.card_cost}}</td>
-                <td>{{card.card_color}}</td>
-                <td>{{card.card_type}}</td>
-                <td>{{card.count}}</td>
-            </tr>
-            <tr>
-                <th>Text: </th>
-                <td colspan="7">
-                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 330px);">
-                        <label style="vertical-align: top;">{{card.card_text}}</label>
-                    </div>
-                    <div style="display: inline-block;">
-                        <img id="{{ forloop.counter0 }}img" src="{{ card.card_img_url }}"
-                            style="width: 250px; padding-bottom: 20px;">
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="h-100 p-5 bg-light border rounded-3" style="margin: auto; width: 65%; padding: 2rem;">
+  <h1 class="display-4">Your Inventory</h1>
+  <a class="btn btn-primary" role="button" href="{% url 'edit_user_inventory' %}">Edit Inventory</a>
+  <a class="btn btn-success" role="button" href="">Add Cards</a>
+  <table style="margin-left: 3px; margin-top: 10px;">
+    <tbody>
+      <tr>
+        <td>Inventory Name:</td>
+        <td>{{user_inventory.inventory_name}}</td>
+      </tr>
+      <tr>
+        <td>Current Status:</td>
+        <td>{{user_inventory.inventory_view_status | displayEnum}}</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input id="checkbox" name="checkbox" style="position: relative; top: 1px" type="checkbox" checked
+            onclick="disableEnableImages()">
+          <label style="padding-left: 5px;" for="checkbox">
+            Show images
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <td>Cards in Inventory:</td>
+      </tr>
+    </tbody>
+  </table>
+  <table style="border-collapse: separate; border-spacing: 3px;">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Rarity</th>
+        <th>Set</th>
+        <th>Cost</th>
+        <th>Color</th>
+        <th>Type</th>
+        <th># of Cards</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in user_inventory.consolidated_cards %}
+      <tr>
+        <td>{{card.card_name}}</td>
+        <td>{{card.card_status | displayEnum}}</td>
+        <td>{{card.card_rarity}}</td>
+        <td>{{card.card_set}}</td>
+        <td>{{card.card_cost}}</td>
+        <td>{{card.card_color}}</td>
+        <td>{{card.card_type}}</td>
+        <td>{{card.count}}</td>
+      </tr>
+      <tr>
+        <th>Text: </th>
+        <td colspan="7">
+          <div style="display: inline-block; vertical-align: top; width: calc(100% - 330px);">
+            <label style="vertical-align: top;">{{card.card_text}}</label>
+          </div>
+          <div style="display: inline-block;">
+            <img id="{{ forloop.counter0 }}img" src="{{ card.card_img_url }}"
+              style="width: 250px; padding-bottom: 20px;">
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock content %}

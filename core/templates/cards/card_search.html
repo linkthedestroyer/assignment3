@@ -3,23 +3,238 @@
 {% block title %}Card Search{% endblock title %}
 
 {% block content %}
-<form action="{% url 'search_results' %}" method="get">
-    <div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
-        <h1 class="display-4">Card Search</h1>
-        <p>Please select where you want to search:</p>
-        <input type="how" id="scryfall" name="scryfall" value="scryfall">
-        <label for="scryfall">Scryfall</label>
-        <input type="how" id="public_inventory" name="public_inventory" value="public_inventory">
-        <label for="public_inventory">Public Inventory</label>
-        <input type="how" id="private_inventory" name="private_inventory" value="private_inventory">
-        <label for="private_inventory">Private Inventory</label>
-        <table style="margin-left: 3px; margin-top: 10px;">
-            <tbody>
-                <tr>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<style>
+  td {
+    text-align: left;
+  }
+
+  td:not([class])>* {
+    width: 100%;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+    margin: 0 7px 0 0;
+  }
+</style>
+<script>
+  function disableStatus() {
+    document.getElementById('status_row').setAttribute('style', 'display: none;');
+  }
+  function enableStatus() {
+    document.getElementById('status_row').removeAttribute('style');
+  }
+  function validateForm() {
+    const inputs = document.getElementsByTagName('input');
+    let hasAnyData = false;
+    for (const input of inputs) {
+      if (input.name != 'how') {
+        if (input.type != 'checkbox' && typeof input.value === 'string' && input.value?.trim() != '') {
+          hasAnyData = true;
+        } else if (input.type != 'checkbox' && typeof input.value === 'boolean' && input.value === true) {
+          hasAnyData = true;
+        } else if (input.type === 'checkbox' && input.checked === true) {
+          hasAnyData = true;
+        }
+      }
+    }
+    const selects = document.getElementsByTagName('select');
+    for (const select of selects) {
+      if (typeof select.value === 'string' && select.value?.trim() != '') {
+        hasAnyData = true;
+      }
+    }
+    return hasAnyData;
+  }
+</script>
+<form name="search" action="{% url 'card_search_results' %}" method="get" onsubmit="return validateForm()">
+  <div class="h-100 p-5 bg-light border rounded-3" style="margin: auto; width: 65%; padding: 2rem;">
+    <h1 class="display-4">Card Search</h1>
+    <table style="margin-left: 3px; margin-top: 10px; border-collapse: inherit; border-spacing: 0 10px;">
+      <thead>
+        <tr>
+          <th colspan="3">
+            <p>Please select where you want to search:</p>
+          </th>
+        </tr>
+        <tr>
+          <th style="padding-right: 5px;">
+            <input type="radio" id="public_inventory" name="how" value="public_inventory" onclick="enableStatus()"
+              checked style="top: 1px; position: relative;">
+            <label for="public_inventory">Public Inventory</label>
+          </th>
+          <th style="padding: 0 5px; width: 150px;">
+            <input type="radio" id="private_inventory" name="how" value="private_inventory" onclick="enableStatus()"
+              style="top: 1px; position: relative;">
+            <label for="private_inventory">Private Inventory</label>
+          </th>
+          <th style="padding-left: 5px;">
+            <input type="radio" id="scryfall" name="how" value="scryfall" onclick="disableStatus()"
+              style="top: 1px; position: relative;">
+            <label for="scryfall">Scryfall</label>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="33" height="24" viewBox="0 0 33 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <g fill-rule="evenodd">
+                <path
+                  d="M2.12 5V3c0-.55.45-1 1-1h26c.55 0 1 .45 1 1v2h-28zm0 3h28V6h-28v2zm28 13c0 .55-.45 1-1 1h-26c-.55 0-1-.45-1-1V9h28v12zm-1-21h-26c-1.66 0-3 1.34-3 3v18c0 1.66 1.34 3 3 3h26c1.66 0 3-1.34 3-3V3c0-1.66-1.34-3-3-3z">
+                </path>
+                <path
+                  d="M17.121 18h10v-1h-10v1zm0-3h10v-1h-10v1zM5.12 21c.03-1.11.95-2 2.06-2h.44c.39 0 .75-.24.91-.6.16-.36.09-.79-.18-1.08-.75-.81-1.23-2.14-1.23-3.38 0-1.79.98-2.94 2.5-2.94s2.5 1.15 2.5 2.94c0 1.24-.48 2.57-1.23 3.38-.27.29-.34.72-.18 1.08.16.36.52.6.91.6h.44c1.11 0 2.03.89 2.06 2h.995a3.057 3.057 0 0 0-3.054-3h-.44c.91-.98 1.5-2.54 1.5-4.06 0-2.49-1.57-3.94-3.5-3.94s-3.5 1.45-3.5 3.94c0 1.52.59 3.08 1.5 4.06h-.44a3.057 3.057 0 0 0-3.054 3h.994-.001z">
+                </path>
+              </g>
+            </svg>
+            Name
+          </th>
+          <td colspan="2"><input type="text" id="name" name="name"></td>
+        </tr>
+        <tr id="status_row">
+          <th>
+            <svg focusable="false" aria-hidden="true" width="33" height="25" viewBox="0 0 33 25"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M25.788 18H8.561l-1.996-6-.665-2-1-3h1.555l1 3 .666 2 1 3h17.222l.998 3h-1.553zm-.447 5.001H6.561L2.89 12h1.564l2.666 8h17.223l.998 3.001zM27.788 13H10.561l-.333-1-.668-2-1.001-3-.667-2-1.001-3h18.79l3.67 11h-1.563zM4.121 0l1.667 5H2.121l1.667 5H.121l5 15h23l-1.666-5h3.666l-1.666-5h3.666l-5-15h-23z"
+                fill-rule="evenodd"></path>
+            </svg>
+            Status
+          </th>
+          <td colspan="2">
+            <select id="status" name="status">
+              <option></option>
+              <option value="UNUSED">Unused</option>
+              <option value="IN_DECK">In deck</option>
+              <option value="AVAILABLE_FOR_LOAN">Available for loan</option>
+              <option value="LOANED_OUT">Loaned out</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="32" height="31" viewBox="0 0 32 31"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M22 17.24l-1.21.87.49 1.41 2.65 7.78-6.79-4.91-1.14-.82-1.14.82-6.79 4.91 2.65-7.78.49-1.41-1.21-.87-5.93-4.29H13l.46-1.34L16 4.05l2.58 7.56.42 1.34h8.89L22 17.24zm9-6.29H20.44L16.92.67a1 1 0 0 0-1.85 0l-3.51 10.28H1a1 1 0 0 0-.57 1.82l8.45 6.1L5.2 29.6a1 1 0 0 0 1.5 1.14l9.3-6.72 9.29 6.72a1 1 0 0 0 1.5-1.14l-3.65-10.73 8.45-6.1a1 1 0 0 0-.59-1.82z"
+                fill-rule="evenodd"></path>
+            </svg>
+            Rarity
+          </th>
+          <td colspan="2">
+            <select id="rarity" name="rarity">
+              <option></option>
+              <option value="common">Common</option>
+              <option value="uncommon">Uncommon</option>
+              <option value="rare">Rare</option>
+              <option value="mythic">Mythic</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="30" height="30" viewBox="0 0 30 30">
+              <path
+                d="M15 2C11.704 7.789 9.287 15.983 0 8l4 12v8h22v-8l4-12c-9.287 7.983-11.704-.211-15-6zM6 26v-4h18v4H6zm18-6.324V20H6v-.324l-2.32-6.962c5.055 1.849 8.383-.683 11.32-6.475 2.938 5.792 6.266 8.323 11.32 6.475L24 19.676z">
+              </path>
+            </svg>
+            Set
+          </th>
+          <td colspan="2"><input type="text" id="set" name="set"></td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+              viewBox="0 0 30 30">
+              <path
+                d="M22 11c-2.393 0-4.534.66-6 1.7v-6.7c0-2.762-3.582-5-8-5s-8 2.238-8 5v16c0 2.762 3.582 5 8 5 2.512 0 4.751-.725 6.218-1.857.828 2.21 3.994 3.857 7.782 3.857 4.418 0 8-2.238 8-5v-8c0-2.762-3.582-5-8-5zm-14-8c3.434 0 6 1.584 6 3s-2.566 3-6 3-6-1.584-6-3 2.566-3 6-3zm-6 6.3c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7c0 1.416-2.566 3-6 3s-6-1.584-6-3v-.7zm0 4c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7c0 1.416-2.566 3-6 3s-6-1.584-6-3v-.7zm0 4c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7c0 1.416-2.566 3-6 3s-6-1.584-6-3v-.7zm6 7.7c-3.434 0-6-1.584-6-3v-.7c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7c0 1.416-2.566 3-6 3zm20-1c0 1.416-2.566 3-6 3s-6-1.584-6-3v-.7c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7zm0-4c0 1.416-2.566 3-6 3s-6-1.584-6-3v-.7c1.466 1.04 3.607 1.7 6 1.7s4.534-.66 6-1.7v.7zm-6-1c-3.434 0-6-1.584-6-3s2.566-3 6-3 6 1.584 6 3-2.566 3-6 3z">
+              </path>
+            </svg>
+            Cost
+          </th>
+          <td colspan="2">
+            <input type="text" id="cost" name="cost" placeholder="Either single number or with generic and symbols"><br>
+            Enter symbols that should be in the mana cost.<br>Combine with mana value to search this exact amount.
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="95" height="88" viewBox="0 0 95 88"
+              xmlns="http://www.w3.org/2000/svg">
+              <g fill="#000" fill-rule="evenodd">
+                <path
+                  d="M47 30c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15zm0-7c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zM80 53c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15zm0-7c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zM65 88c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15zm0-7c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zM28 88c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15zm0-7c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zM15 54c8.284 0 15-6.716 15-15 0-8.284-6.716-15-15-15-8.284 0-15 6.716-15 15 0 8.284 6.716 15 15 15zm0-7c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z">
+                </path>
+              </g>
+            </svg>
+            Color
+          </th>
+          <td class="color" colspan="2">
+            <input type="checkbox" id="white" name="white" value="white">
+            <label for="white">White</label>
+            <input type="checkbox" id="blue" name="blue" value="blue">
+            <label for="blue">Blue</label>
+            <input type="checkbox" id="black" name="black" value="black">
+            <label for="black">Black</label>
+            <input type="checkbox" id="red" name="red" value="red">
+            <label for="red">Red</label>
+            <input type="checkbox" id="green" name="green" value="green">
+            <label for="green">Green</label>
+            <input type="checkbox" id="colorless" name="colorless" value="colorless">
+            <label for="colorless">Colorless</label>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="32" height="31" viewBox="0 0 32 31"
+              xmlns="http://www.w3.org/2000/svg">
+              <g fill-rule="evenodd">
+                <path
+                  d="M15.39 14.52c-.23-.5-.83-.71-1.33-.48-.5.24-.72.83-.48 1.33.68 1.46 1.86 4.11 2.99 6.93 1.13 2.83 2.23 5.85 2.75 7.99.14.54.68.87 1.22.73.53-.13.86-.67.73-1.21-.58-2.32-1.7-5.38-2.85-8.25-1.15-2.87-2.33-5.54-3.03-7.04">
+                </path>
+                <path
+                  d="M28.72 25.19c-2.24-6.88-6.07-15.03-6.12-15.15-1.55-3.28-4.86-5.39-8.47-5.39-1.39 0-2.75.31-4.01.91a9.366 9.366 0 0 0-4.8 5.35 9.36 9.36 0 0 0-.55 3.17c0 1.38.3 2.75.91 4.03 1.02 2.17 2.47 5.51 3.7 8.68a1.001 1.001 0 0 0 1.846.039 1 1 0 0 0 .014-.769c-1.25-3.22-2.71-6.58-3.75-8.8a7.385 7.385 0 0 1-.72-3.18c0-.84.14-1.68.43-2.5.67-1.87 2-3.36 3.78-4.21 1.01-.48 2.05-.72 3.15-.72 2.82 0 5.45 1.67 6.66 4.24.04.08 3.85 8.22 6.03 14.92a1 1 0 0 0 1.9-.62">
+                </path>
+                <path
+                  d="M30.86 20.78a.99.99 0 0 0 .58-1.29c-2.34-6.05-4.98-11.57-5.02-11.67v.01C24.14 3.06 19.25 0 13.93 0c-2.05 0-4.05.45-5.91 1.33-1.1.51-2.12 1.17-3.03 1.93a1 1 0 1 0 1.29 1.53A11.861 11.861 0 0 1 13.93 2c4.54 0 8.75 2.64 10.69 6.69v.01c.02.04 2.65 5.55 4.95 11.51.2.52.78.77 1.29.57m-29.4-1.2c.46.97 1 2.13 1.55 3.4.23.5.82.73 1.32.51.51-.22.74-.81.51-1.32-.56-1.28-1.1-2.46-1.57-3.45-.77-1.6-1.15-3.3-1.15-5.01a11.67 11.67 0 0 1 .91-4.5.997.997 0 0 0-.54-1.3.98.98 0 0 0-1.3.53c-.09.22-.18.44-.26.66-.54 1.5-.81 3.06-.81 4.61 0 2.01.45 4.01 1.34 5.87">
+                </path>
+                <path
+                  d="M19.14 12.38c-.83-1.85-2.63-3.08-4.63-3.08-.76 0-1.51.18-2.2.53-.8.4-1.47 1-1.96 1.74a.999.999 0 0 0 .27 1.39c.46.31 1.08.18 1.39-.28.31-.46.72-.82 1.2-1.07.43-.21.85-.31 1.3-.31 1.16-.01 2.28.72 2.8 1.9v-.01c.02.04.55 1.23 1.3 3.04.21.51.79.75 1.3.54.51-.21.76-.8.54-1.31-.76-1.82-1.29-3.03-1.31-3.08m5.33 17.88a.99.99 0 0 0 .74-1.2c-.56-2.4-1.53-5.28-2.54-7.98-.19-.52-.77-.78-1.29-.59-.51.2-.78.77-.58 1.29.99 2.66 1.94 5.49 2.47 7.74.12.53.66.87 1.2.74m-9.76-.8c.16.53.72.83 1.25.66.53-.16.82-.72.66-1.25-1.15-3.74-3.08-8.55-4.33-11.48-.22-.5-.81-.74-1.32-.52-.5.22-.74.8-.52 1.31 1.23 2.88 3.15 7.67 4.26 11.28">
+                </path>
+              </g>
+            </svg>
+            Type
+          </th>
+          <td colspan="2"><input type="text" id="type" name="type"></td>
+        </tr>
+        <tr>
+          <th>
+            <svg focusable="false" aria-hidden="true" width="29" height="32" viewBox="0 0 29 32"
+              xmlns="http://www.w3.org/2000/svg">
+              <g fill-rule="evenodd">
+                <path
+                  d="M23.12 29c1.1 0 2-.9 2-2V7h1v23h-22v-1h19zm-21-22h21v20h-21V7zm0-4c0-.55.45-1 1-1h22c.55 0 1 .45 1 1v3h-1V2l-2 4h-21V3zm2 29h22c1.1 0 2-.9 2-2V3c0-1.66-1.34-3-3-3h-22c-1.66 0-3 1.34-3 3v24c0 1.1.9 2 2 2v1c0 1.1.9 2 2 2z">
+                </path>
+                <path d="M4.121 11h17v-1h-17v1zm0 3h17v-1h-17v1zm0 3h17v-1h-17v1zm0 3h17v-1h-17v1z"></path>
+              </g>
+            </svg>
+            Text
+          </th>
+          <td colspan="2"><input type="text" id="text" name="text"></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <th><button class="btn btn-primary ml-2" type="submit" style="margin: 0px !important;"
+              id="search">Search</button></th>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 </form>
 {% endblock content %}

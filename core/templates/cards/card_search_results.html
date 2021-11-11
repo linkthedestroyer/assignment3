@@ -3,21 +3,182 @@
 {% block title %}Card Search Results{% endblock title %}
 
 {% block content %}
-<div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
-    <h1 class="display-4">Card Search Results</h1>
-    <p>Please select where you want to search:</p>
-      <input type="how" id="scryfall" name="scryfall" value="scryfall">
-      <label for="scryfall">Scryfall</label><br>
-      <input type="how" id="public_inventory" name="public_inventory" value="public_inventory">
-      <label for="public_inventory">Public Inventory</label><br>
-      <input type="how" id="private_inventory" name="private_inventory" value="private_inventory">
-      <label for="private_inventory">Private Inventory</label>
-    <table style="margin-left: 3px; margin-top: 10px;">
-        <tbody>
-            <tr>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+<style>
+  td,
+  th {
+    padding: 1px 5px
+  }
+
+  .status {
+    min-width: 145px;
+  }
+
+  tr.skip-border>td {
+    border-bottom-width: 0;
+  }
+
+  .hide {
+    display: none;
+  }
+</style>
+<script>
+  function disableEnableImages() {
+    console.log('test');
+    const images = document.getElementsByName('image');
+    for (const image of images) {
+      if (image.getAttribute('style')?.indexOf('display') >= 0) {
+        image.setAttribute('style', 'width: 250px; padding-bottom: 20px;');
+      } else {
+        image.setAttribute('style', 'display: None;')
+      }
+    }
+  }
+  function disableText() {
+    const textRows = document.getElementsByClassName('text-row');
+    for (const textRow of textRows) {
+      if (textRow.hasAttribute('style')) {
+        textRow.removeAttribute('style');
+      } else {
+        textRow.setAttribute('style', 'display: None;')
+      }
+    }
+    const detailRows = document.getElementsByClassName('detail-row');
+    for (const detailRow of detailRows) {
+      if (detailRow.getAttribute('class')?.indexOf('skip-border') >= 0) {
+        removeClass(detailRow, 'skip-border');
+      } else {
+        addClass(detailRow, 'skip-border');
+      }
+    }
+  }
+  function showAll() {
+    console.log('test');
+    let rows = document.getElementsByClassName('detail-row');
+    for (const row of rows) {
+      row.setAttribute('class', 'detail-row')
+    }
+    rows = document.getElementsByClassName('text-row');
+    for (const row of rows) {
+      row.setAttribute('class', 'text-row')
+    }
+  }
+  function yoursOnly() {
+    let rows = document.getElementsByName('yours');
+    for (const row of rows) {
+      removeClass(row, 'hide');
+    }
+    rows = document.getElementsByName('not-yours');
+    for (const row of rows) {
+      addClass(row, 'hide');
+    }
+  }
+  function notYoursOnly() {
+    let rows = document.getElementsByName('yours');
+    for (const row of rows) {
+      addClass(row, 'hide');
+    } 1
+    rows = document.getElementsByName('not-yours');
+    for (const row of rows) {
+      removeClass(row, 'hide');
+    }
+  }
+  function addClass(element, className) {
+    if (element.getAttribute('class')?.indexOf(className) < 0 || element.getAttribute('class')?.indexOf(className) === undefined) {
+      element.setAttribute('class', `${element?.getAttribute('class') ? element?.getAttribute('class') + ' ' : ''}${className}`);
+    }
+  }
+  function removeClass(element, className) {
+    while (element.getAttribute('class')?.indexOf(className) >= 0) {
+      element.setAttribute('class', `${element.getAttribute('class').replace(className, '').trim()}`);
+    }
+  }
+</script>
+<div class="h-100 p-5 bg-light border rounded-3" style="margin: auto; width: 75%; padding: 2rem;">
+  <h1 class="display-4">Card Search Results</h1>
+  <table style="border-collapse: collapse;" class="table table-hover ">
+    <thead>
+      <tr>
+        <td colspan="6">
+          <input id="imagesCheckbox" name="imagesCheckbox" style="position: relative; top: 1px" type="checkbox" checked
+            onclick="disableEnableImages()">
+          <label for="imagesCheckbox" style="padding-left: 5px; margin-right: 10px;">
+            Show images
+          </label>
+          <input id="textCheckbox" name="textCheckbox" style="position: relative; top: 1px" type="checkbox" checked
+            onclick="disableText()">
+          <label for="textCheckbox" style="padding-left: 5px; margin-right: 10px;">
+            Show text
+          </label>
+          <input id="onlyImagesCheckbox" name="onlyImagesCheckbox" style="position: relative; top: 1px" type="checkbox"
+            onclick="enableImagesOnly()">
+          <label for="onlyImagesCheckbox" style="padding-left: 5px;">
+            Only images
+          </label><br>
+          <input id="all" name="showOnInventory" value="all" type="radio" onclick="showAll()"
+            style="position: relative; top: 1px" checked>
+          <label for="all" style="padding-left: 5px; margin-right: 10px;">
+            All inventories
+          </label>
+          <input id="yours" name="showOnInventory" value="yours" type="radio" onclick="yoursOnly()"
+            style="position: relative; top: 1px">
+          <label for="yours" style="padding-left: 5px; margin-right: 10px;">
+            Only yours
+          </label>
+          <input id="not-yours" name="showOnInventory" value="not-yours" type="radio" onclick="notYoursOnly()"
+            style="position: relative; top: 1px">
+          <label for="yonot-yoursurs" style="padding-left: 5px; margin-right: 10px;">
+            Not yours
+          </label>
+        </td>
+      </tr>
+      <tr>
+        <th>Request</th>
+        <th>Inventory</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Rarity</th>
+        <th>Set</th>
+        <th>Cost</th>
+        <th>Color</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in object_list %}
+      <tr name="{% if user.pk == card.inventory.inventory_owner.pk %}yours{% else %}not-yours{% endif %}"
+        class="skip-border detail-row">
+        <td>
+          {% if user.pk != card.inventory.inventory_owner.pk and card.loaned_card == None %}
+          <input type="checkbox" id="{{ forloop.counter0 }}Request" name="{{ forloop.counter0 }}Request">
+          {% endif %}
+        </td>
+        <td>
+          {% if user.pk == card.inventory.inventory_owner.pk %}<a href="#">Your Inventory</a>
+          {% elif request.GET.how == 'public_inventory' %}<a href="#">{{card.inventory.inventory_name}}</a>
+          {% else %}Private{% endif %}
+        </td>
+        <td>{{card.card_name}}</td>
+        <td class="status">{{card.card_status | displayEnum}}</td>
+        <td>{{card.card_rarity}}</td>
+        <td>{{card.card_set}}</td>
+        <td>{{card.card_cost}}</td>
+        <td>{{card.card_color}}</td>
+        <td>{{card.card_type.strip|default_if_none:"Empty"}}</td>
+      </tr>
+      <tr name="{% if user.pk == card.inventory.inventory_owner.pk %}yours{% else %}not-yours{% endif %}"
+        class="text-row">
+        <th>Text: </th>
+        <td colspan="8">
+          <div style="display: inline-block; vertical-align: top; width: calc(100% - 270px);">
+            <label style="vertical-align: top;">{{card.card_text}}</label>
+          </div>
+          <div style="display: inline-block;">
+            <img name="image" src="{{ card.card_img_url }}" style="width: 250px; padding-bottom: 20px;">
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock content %}

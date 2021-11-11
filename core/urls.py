@@ -9,5 +9,14 @@ urlpatterns = [
     path(
         "inventory/edit", UpdateUserInventoryView.as_view(), name="edit_user_inventory"
     ),
-    path("card/search", CardSearchResultsView.as_view(), name="card_search_results"),
+    path(
+        "card/search",
+        TemplateView.as_view(template_name="cards\card_search.html"),
+        name="card_search",
+    ),
+    path(
+        "card/search/results",
+        CardSearchResultsView.as_view(),
+        name="card_search_results",
+    ),
 ]
