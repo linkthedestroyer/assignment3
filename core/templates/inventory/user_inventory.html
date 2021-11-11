@@ -3,6 +3,32 @@
 {% block title %}User Inventory{% endblock title %}
 
 {% block content %}
+<script>
+    function disableEnableImages() {
+        console.log('test');
+        var length = "{{ user_inventory.card_set.all| length }}";
+        var isEnable = false;
+        for (var index = 0; index < length; index++) {
+            var element = document.getElementById(`${index}img`);
+            var style = element.getAttribute('style');
+            if (style.indexOf('display') >= 0) {
+                element.setAttribute('style', 'width: 250px; padding-bottom: 20px;');
+                isEnable = true;
+            } else {
+                element.setAttribute('style', 'display: none;');
+                isEnable = false;
+            }
+        }
+        if (isEnable) {
+            var checkbox = document.getElementById('checkbox');
+            var att = document.createAttribute("checked");
+            checkbox.setAttributeNode(att);
+        } else {
+            var checkbox = document.getElementById('checkbox');
+            checkbox.removeAttribute('checked')
+        }
+    }
+</script>
 <div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
     <h1 class="display-4">Your Inventory</h1>
     <a class="btn btn-primary" role="button" href="{% url 'edit_user_inventory' %}">Edit Inventory</a>
@@ -16,6 +42,14 @@
             <tr>
                 <td>Current Status:</td>
                 <td>{{user_inventory.inventory_view_status | displayEnum}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <label style="padding-left: 10px;" onclick="disableEnableImages()">
+                        <input id="checkbox" style="vertical-align: middle;" type="checkbox" checked>
+                        Show images
+                    </label>
+                </td>
             </tr>
             <tr>
                 <td>Cards in Inventory:</td>
@@ -32,10 +66,11 @@
                 <th>Cost</th>
                 <th>Color</th>
                 <th>Type</th>
+                <th># of Cards</th>
             </tr>
         </thead>
         <tbody>
-            {% for card in user_inventory.card_set.all %}
+            {% for card in user_inventory.consolidated_cards %}
             <tr>
                 <td>{{card.card_name}}</td>
                 <td>{{card.card_status | displayEnum}}</td>
@@ -44,10 +79,19 @@
                 <td>{{card.card_cost}}</td>
                 <td>{{card.card_color}}</td>
                 <td>{{card.card_type}}</td>
+                <td>{{card.count}}</td>
             </tr>
             <tr>
-                <th style="vertical-align: top;">Text: </th>
-                <td colspan="6">{{card.card_text}}</td>
+                <th>Text: </th>
+                <td colspan="7">
+                    <div style="display: inline-block; vertical-align: top; width: calc(100% - 330px);">
+                        <label style="vertical-align: top;">{{card.card_text}}</label>
+                    </div>
+                    <div style="display: inline-block;">
+                        <img id="{{ forloop.counter0 }}img" src="{{ card.card_img_url }}"
+                            style="width: 250px; padding-bottom: 20px;">
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

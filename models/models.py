@@ -39,10 +39,11 @@ class Card(models.Model):
     card_status = models.CharField(max_length=50, blank=False, null=False, default="UNUSED", choices=CARD_CHOICES)
     card_rarity = models.CharField(max_length=20, blank=False, null=False, default=" ")
     card_set = models.CharField(max_length=20, blank=False, null=False, default=" ")
-    card_cost = models.CharField(max_length=20, blank=False, null=False, default=" ")
+    card_cost = models.CharField(max_length=20, blank=True, null=True, default=" ")
     card_color = models.CharField(max_length=20, blank=False, null=False, default=" ")
     card_type = models.CharField(max_length=50, blank=False, null=False, default=" ")
     card_text = models.CharField(max_length=200, blank=False, null=False, default=" ")
+    card_img_url = models.CharField(max_length=500, blank=True, null=True, default="")
     inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -122,9 +123,7 @@ class Loan_Request(models.Model):
 
 class Loaned_Card(models.Model):
     card = models.ForeignKey(Card, null=True, on_delete=models.CASCADE)
-    inventory = models.ForeignKey(Inventory, null=True, on_delete=models.CASCADE)
     loan_request = models.ForeignKey(Loan_Request, null=True, on_delete=models.CASCADE)
-    loaned_inventory = models.ForeignKey(Loaned_Inventory, null=True, on_delete=models.CASCADE)
     returned_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:

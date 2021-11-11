@@ -4,7 +4,7 @@ register = template.Library()
 
 
 def displayEnum(value: str):
-    return value.replace('_', ' ').capitalize()
+    return value.replace("_", " ").capitalize()
 
 
-register.filter('displayEnum', displayEnum)
+register.filter("displayEnum", displayEnum)

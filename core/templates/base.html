@@ -62,7 +62,7 @@
             <a class="app-navbar-item" href="{% url 'home' %}">Home</a>
             {% if user.is_authenticated %}
             <a class="app-navbar-item" href="{% url 'user_inventory' %}">User Inventory</a>
-            <a class="app-navbar-item" href="">Find Card</a>
+            <a class="app-navbar-item" href="{% url 'user_inventory' %}">Find Card</a>
             <a class="app-navbar-item" href="">Public Inventories</a>
             <a class="app-navbar-item" href="">Request Loan</a>
             {% if user.is_superuser %}

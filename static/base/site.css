@@ -52,7 +52,11 @@ div.image-banner {
     width: 100%;
     background-image: url("https://wallpaperaccess.com/full/4541098.jpg");
     background-color: black;
-    background-size: cover;
+    background-size: unset;
     background-repeat: no-repeat;
-    background-position: center center;
+    background-position: top center;
+}
+
+td, th {
+    vertical-align: top;
 }

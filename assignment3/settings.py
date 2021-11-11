@@ -25,7 +25,7 @@ SECRET_KEY = "&=2@7vm*@5iugaq3lkwq1xxbb*#x(1xgvus!vu_k9%yl*vpswc"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'linkthedestroyer.pythonanywhere.com']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "linkthedestroyer.pythonanywhere.com"]
 
 AUTH_USER_MODEL = "users.magic_user"
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "models",
     "core",
     "inventory",
+    "cards",
 ]
 
 MIDDLEWARE = [
@@ -113,7 +114,7 @@ LOGOUT_REDIRECT_URL = "home"
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = "America/Chicago"
 
 USE_I18N = True
 
@@ -130,13 +131,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_collected")
-STATIC_URL = '/static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"

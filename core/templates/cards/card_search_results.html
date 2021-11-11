@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block title %}Card Search Results{% endblock title %}
+
+{% block content %}
+<div class="jumbotron" style="margin: auto; width: 65%; padding: 2rem;">
+    <h1 class="display-4">Card Search Results</h1>
+    <p>Please select where you want to search:</p>
+      <input type="how" id="scryfall" name="scryfall" value="scryfall">
+      <label for="scryfall">Scryfall</label><br>
+      <input type="how" id="public_inventory" name="public_inventory" value="public_inventory">
+      <label for="public_inventory">Public Inventory</label><br>
+      <input type="how" id="private_inventory" name="private_inventory" value="private_inventory">
+      <label for="private_inventory">Private Inventory</label>
+    <table style="margin-left: 3px; margin-top: 10px;">
+        <tbody>
+            <tr>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
