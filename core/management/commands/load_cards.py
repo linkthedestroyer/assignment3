@@ -45,14 +45,14 @@ class Command(BaseCommand):
             card_data = json.load(file_object)
             already_inserted = []
             for x in range(0, 1000):
-                random_index = random.randint(0, len(card_data["data_list"]))
+                random_index = random.randint(0, len(card_data["data_list"]) - 1)
                 random_card = card_data["data_list"][random_index]
                 while (
                     random_index in already_inserted
                     or random_card["set_type"] == "memorabilia"
                     or random_card["layout"] == "token"
                 ):
-                    random_index = random.randint(0, len(card_data["data_list"]))
+                    random_index = random.randint(0, len(card_data["data_list"]) - 1)
                     random_card = card_data["data_list"][random_index]
 
                 already_inserted.append(random_index)
@@ -68,9 +68,7 @@ class Command(BaseCommand):
                     try:
                         new_card.card_text = random_card["oracle_text"]
                     except:
-                        new_card.card_text = " ".join(
-                            map(get_oracle_text, random_card["card_faces"])
-                        )
+                        new_card.card_text = " ".join(map(get_oracle_text, random_card["card_faces"]))
                     new_card.card_img_url = random_card["image_uris"]["normal"]
                     new_card.inventory = random.choice(list(Inventory.objects.all()))
                     new_card.save()
@@ -83,14 +81,18 @@ class Command(BaseCommand):
             cards_to_loan: Card = Card.objects.filter(card_status="LOANED_OUT")
             for card_to_loan in cards_to_loan:
                 try:
-                    loaned_inventory: Loaned_Inventory = random.choice(
-                        list(Loaned_Inventory.objects.all())
-                    )
+                    loaned_inventory: Loaned_Inventory = random.choice(list(Loaned_Inventory.objects.all()))
                     new_loan_request = Loan_Request()
                     new_loan_request.requestor = loaned_inventory.loaned_inventory_owner
                     new_loan_request.loaner_inventory = card_to_loan.inventory
                     new_loan_request.loanee_inventory = loaned_inventory
-                    new_loan_request.loan_request_status = "ACCEPTED"
+                    new_loan_request.loan_request_status = [
+                        "REQUESTED",
+                        "ACCEPTED",
+                        "DECLINED",
+                        "RECALLED",
+                        "RETURNED",
+                    ][random.randint(0, 4)]
                     new_loan_request.save()
                     new_loaned_card = Loaned_Card()
                     new_loaned_card.card = card_to_loan
@@ -101,4 +103,3 @@ class Command(BaseCommand):
                     print(cards_to_loan)
                     print(error)
             print(len(Loaned_Card.objects.all()))
-            

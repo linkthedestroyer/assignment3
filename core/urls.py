@@ -1,3 +1,4 @@
+from users.views import CreateMagicUserView
 from cards.views import *
 from django.urls import path
 from django.views.generic.base import TemplateView
@@ -36,4 +37,5 @@ urlpatterns = [
         LoanRequestsListView.as_view(),
         name="view_loan_request",
     ),
+    path("user/create", CreateMagicUserView.as_view(), name="create_user"),
 ]

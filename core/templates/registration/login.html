@@ -1,21 +1,54 @@
 {% extends 'base.html' %}
-
+<!-- prettier-ignore -->
 {% block title %}Log In{% endblock title %}
-
+<!-- prettier-ignore -->
 {% block content %}
+<style>
+  td {
+    border: 0px;
+  }
+</style>
 <form method="post">
-    <div class="h-100 p-5 bg-light border rounded-3" style="padding-top: 20px; min-height: 300px; max-height: 400px; margin: auto; width: 350px; opacity: .8;">
-        <h1 class="display-4">Log In</h1>
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <p class="lead">
+  <div
+    class="h-100 p-5 bg-light border rounded-3"
+    style="
+      padding-top: 20px;
+      min-height: 300px;
+      max-height: 400px;
+      margin: auto;
+      width: auto;
+      max-width: 400px;
+    ">
+    <h1>Log In</h1>
+    {% if request.GET.success == 'true' %}
+    <h5 class="text-success">Successfully created user</h5>
+    {% endif %} {% csrf_token %}
+    <table class="table table-hover">
+      {{ form.as_table }}
+      <tfoot>
+        <tr>
+          <td></td>
+          <td>
             <button class="btn btn-primary ml-2" type="submit">Log In</button>
-        </p>
-        <p class="lead">
-            <a href="{% url 'password_reset' %}" class="btn btn-outline-primary ml-2">Reset Password</a>
-        </p>
-    </div>
+            <a href="{% url 'create_user' %}" class="btn btn-success ml-2">
+              Register
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <a
+              href="{% url 'password_reset' %}"
+              class="btn btn-outline-primary ml-2">
+              Reset Password
+            </a>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <p class="lead"></p>
+    <p class="lead"></p>
+  </div>
 </form>
 {% endblock content %}

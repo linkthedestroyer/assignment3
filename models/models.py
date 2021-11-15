@@ -8,7 +8,7 @@ from users.models import Magic_User
 class Inventory(models.Model):
     inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
     inventory_owner = models.OneToOneField(
-        get_user_model(), null=True, on_delete=models.CASCADE, related_name='inventory'
+        get_user_model(), null=True, on_delete=models.CASCADE, related_name="inventory"
     )
     inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
@@ -78,7 +78,7 @@ class Card(models.Model):
 class Loaned_Inventory(models.Model):
     loaned_inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
     loaned_inventory_owner = models.OneToOneField(
-        get_user_model(), null=True, on_delete=models.CASCADE, related_name='loaned_inventory'
+        get_user_model(), null=True, on_delete=models.CASCADE, related_name="loaned_inventory"
     )
     loaned_inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
@@ -111,8 +111,8 @@ class Loan_Request(models.Model):
             ("REQUESTED", "Requested"),
             ("ACCEPTED", "Accepted"),
             ("DECLINED", "Declined"),
-            ('RECALLED', 'Recalled'),
-            ('RETURNED', 'Returned'),
+            ("RECALLED", "Recalled"),
+            ("RETURNED", "Returned"),
         ),
     )
 

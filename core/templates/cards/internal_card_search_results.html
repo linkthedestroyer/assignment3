@@ -42,7 +42,7 @@
 <div
   class="h-100 p-5 bg-light border rounded-3"
   style="margin: auto; width: 75%; padding: 2rem">
-  <h3 class="display-9">{{ title }}</h3>
+  <h4>{{ title }}</h4>
   <table
     style="border-collapse: collapse; table-layout: fixed"
     class="table table-hover">
@@ -148,7 +148,8 @@
           {% if user.pk == card.inventory.inventory_owner.pk %}
           <a href="{% url 'user_inventory' %}">Your Inventory</a>
           {% elif request.GET.how == 'public_inventory' %}
-          <a href="{% url 'card_view' %}?requester_type=Inventory&requester_id={{card.inventory.pk}}">
+          <a
+            href="{% url 'card_view' %}?requester_type=Inventory&requester_id={{card.inventory.pk}}">
             {{card.inventory.inventory_name}}
           </a>
           {% else %}
@@ -185,22 +186,18 @@
       </tr>
       {% endfor %}
     </tbody>
+    <tfoot>
+      <tr
+        id="footer"
+        class="footer fixed-bottom mt-auto py-3 bg-light hide"
+        style="position: sticky; bottom: -1px">
+        <td colspan="9">
+          <a id="create_loan" class="btn btn-primary" role="button" href="#">
+            CREATE LOAN REQUEST
+          </a>
+        </td>
+      </tr>
+    </tfoot>
   </table>
 </div>
-<footer
-  id="footer"
-  class="footer fixed-bottom mt-auto py-3 bg-light hide"
-  style="
-    width: calc(75% - 15px);
-    margin: 0 auto;
-    padding: 5px 2rem 5px 2rem !important;
-    height: auto;
-    border: 1px lightgray solid;
-  ">
-  <div class="container">
-    <a id="create_loan" class="btn btn-primary" role="button" href="#">
-      CREATE LOAN REQUEST
-    </a>
-  </div>
-</footer>
 {% endblock content %}

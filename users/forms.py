@@ -1,13 +1,12 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
-from .models import Magic_User
+from users.models import Magic_User
 
 
 class MagicUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = Magic_User
-        fields = ("username", "email", "phone_number")
+        fields = ("username", "first_name", "last_name", "email", "phone_number", "address")
 
 
 class MagicUserChangeForm(UserChangeForm):
