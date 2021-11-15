@@ -142,4 +142,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "linkthedestroyer@gmail.com"
 EMAIL_HOST_PASSWORD = "yqnnayegxrtalwah"
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "TestSite Team <noreply@example.com>"
+DEFAULT_FROM_EMAIL = "Magic Loanss Team <noreply@example.com>"
