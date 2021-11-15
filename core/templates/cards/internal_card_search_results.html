@@ -1,0 +1,206 @@
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
+{% block title %}{{ title }}{% endblock title %}
+<!-- prettier-ignore -->
+{% block content %}
+<style>
+  .status {
+    min-width: 145px;
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const nodeListOfElements = document.getElementsByName("requestCard");
+    const requestCards = Array.from(nodeListOfElements);
+    for (const requestCard of requestCards) {
+      requestCard.onchange = () => {
+        checkedRequest = requestCards.find(
+          (request) => request.checked == true
+        );
+        if (checkedRequest) {
+          $("#footer").removeClass("hide");
+        } else {
+          $("#footer").addClass("hide");
+        }
+      };
+    }
+    $(document).on("click", "#create_loan", () => {
+      const url = "{% url 'create_loan_request' %}";
+      const ids = requestCards
+        .filter((request) => request.checked == true)
+        .map(
+          (htmlElement) =>
+            // input => td => tr
+            htmlElement.parentElement.parentElement.id
+        );
+
+      // Construct the full URL with "id"
+      document.location.href = url + "?ids=" + ids;
+    });
+  });
+</script>
+<div
+  class="h-100 p-5 bg-light border rounded-3"
+  style="margin: auto; width: 75%; padding: 2rem">
+  <h3 class="display-9">{{ title }}</h3>
+  <table
+    style="border-collapse: collapse; table-layout: fixed"
+    class="table table-hover">
+    <thead>
+      <tr class="sticky-top mt-auto py-3 bg-light" style="top: 110px">
+        <th colspan="9">
+          <input
+            id="imagesCheckbox"
+            name="imagesCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableEnableImages()" />
+          <label
+            for="imagesCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show images
+          </label>
+          <input
+            id="textCheckbox"
+            name="textCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableText()" />
+          <label
+            for="textCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show text
+          </label>
+          <!--
+          <input id="onlyImagesCheckbox" name="onlyImagesCheckbox" style="position: relative; top: 1px" type="checkbox"
+            onclick="enableImagesOnly()">
+          <label for="onlyImagesCheckbox" style="padding-left: 5px;">
+            Only images
+          </label>-->
+          {% if request.GET.how == 'public_inventory' %}
+          <input
+            id="all"
+            name="showOnInventory"
+            value="all"
+            type="radio"
+            onclick="showAll()"
+            style="position: relative; top: 1px"
+            checked />
+          <label for="all" style="padding-left: 5px; margin-right: 10px">
+            All inventories
+          </label>
+          <input
+            id="yours"
+            name="showOnInventory"
+            value="yours"
+            type="radio"
+            onclick="yoursOnly()"
+            style="position: relative; top: 1px" />
+          <label for="yours" style="padding-left: 5px; margin-right: 10px">
+            Only yours
+          </label>
+          <input
+            id="not-yours"
+            name="showOnInventory"
+            value="not-yours"
+            type="radio"
+            onclick="notYoursOnly()"
+            style="position: relative; top: 1px" />
+          <label for="not-yours" style="padding-left: 5px; margin-right: 10px">
+            Not yours
+          </label>
+          {% endif %}
+        </th>
+      </tr>
+      <tr>
+        <th>Request</th>
+        <th>Inventory</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Rarity</th>
+        <th>Set</th>
+        <th>Cost</th>
+        <th>Color</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in object_list %}
+      <tr
+        id="{{card.pk}}"
+        name="{% if user.pk == card.inventory.inventory_owner.pk %}yours{% else %}not-yours{% endif %}"
+        class="skip-border detail-row cursor-pointer"
+        onclick="checkrow('{{forloop.counter0}}Request')">
+        <td>
+          <!-- prettier-ignore -->
+          {% ifnotequal user.pk card.inventory.inventory_owner.pk %}
+          {% ifnotequal request.GET.requester_type 'Loan_Request' %}
+          <input
+            onclick="event.stopPropagation();"
+            type="checkbox"
+            id="{{ forloop.counter0 }}Request"
+            name="requestCard" />
+          {% endifnotequal %} {% endifnotequal %}
+        </td>
+        <td style="word-break: break-word">
+          {% if user.pk == card.inventory.inventory_owner.pk %}
+          <a href="{% url 'user_inventory' %}">Your Inventory</a>
+          {% elif request.GET.how == 'public_inventory' %}
+          <a href="{% url 'card_view' %}?requester_type=Inventory&requester_id={{card.inventory.pk}}">
+            {{card.inventory.inventory_name}}
+          </a>
+          {% else %}
+          <!-- prettier-ignore -->
+          {{card.inventory.inventory_view_status|displayEnum}}
+          {% endif %}
+        </td>
+        <td>{{card.card_name}}</td>
+        <td class="status">{{card.card_status | displayEnum}}</td>
+        <td>{{card.card_rarity}}</td>
+        <td>{{card.card_set}}</td>
+        <td>{{card.card_cost}}</td>
+        <td>{{card.card_color}}</td>
+        <td>{{card.card_type.strip|default_if_none:"Empty"}}</td>
+      </tr>
+      <tr
+        name="{% if user.pk == card.inventory.inventory_owner.pk %}yours{% else %}not-yours{% endif %}"
+        class="text-row">
+        <th>Text:</th>
+        <td colspan="8">
+          <div
+            name="card_text"
+            class="card-image-and-text"
+            style="display: inline-block; vertical-align: top">
+            <label style="vertical-align: top">{{card.card_text}}</label>
+          </div>
+          <div style="display: inline-block">
+            <img
+              name="image"
+              src="{{ card.card_img_url }}"
+              style="width: 250px; padding-bottom: 20px" />
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<footer
+  id="footer"
+  class="footer fixed-bottom mt-auto py-3 bg-light hide"
+  style="
+    width: calc(75% - 15px);
+    margin: 0 auto;
+    padding: 5px 2rem 5px 2rem !important;
+    height: auto;
+    border: 1px lightgray solid;
+  ">
+  <div class="container">
+    <a id="create_loan" class="btn btn-primary" role="button" href="#">
+      CREATE LOAN REQUEST
+    </a>
+  </div>
+</footer>
+{% endblock content %}

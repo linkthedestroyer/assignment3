@@ -1,57 +1,107 @@
-{% extends 'base.html' %}
-{% load custom_tags %}
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
 {% block title %}User Inventory{% endblock title %}
-
+<!-- prettier-ignore -->
 {% block content %}
 <script>
-  function disableEnableImages() {
-    console.log('test');
-    var length = "{{ user_inventory.card_set.all| length }}";
-    var isEnable = false;
-    for (var index = 0; index < length; index++) {
-      var element = document.getElementById(`${index}img`);
-      var style = element?.getAttribute('style');
-      if (style?.indexOf('display') >= 0) {
-        element?.setAttribute('style', 'width: 250px; padding-bottom: 20px;');
-        isEnable = true;
-      } else {
-        element?.setAttribute('style', 'display: none;');
-        isEnable = false;
-      }
-    }
-  }
+  $(function () {
+    $("a[name='action']").each((index, element) => {
+      $(element).on("click", function (e) {
+        e.preventDefault(); // cancel the link itself
+        var myForm = document.createElement("form");
+        myForm.action = " "; // the href of the link
+        myForm.method = "POST";
+        // prettier-ignore
+        myForm.innerHTML = '{% csrf_token %}';
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: element.id,
+            name: "card_id",
+          })
+          .appendTo(myForm);
+        document.body.append(myForm);
+        myForm.submit();
+      });
+    });
+  });
 </script>
-<div class="h-100 p-5 bg-light border rounded-3" style="margin: auto; width: 65%; padding: 2rem;">
-  <h1 class="display-4">Your Inventory</h1>
-  <a class="btn btn-primary" role="button" href="{% url 'edit_user_inventory' %}">Edit Inventory</a>
-  <a class="btn btn-success" role="button" href="">Add Cards</a>
-  <table style="margin-left: 3px; margin-top: 10px;">
+<div
+  class="h-100 p-5 bg-light border rounded-3"
+  style="margin: auto; width: 75%; padding: 2rem">
+  <h3 class="display-9">Your Inventory</h3>
+  <a
+    class="btn btn-primary"
+    role="button"
+    href="{% url 'edit_user_inventory' %}">
+    Edit Inventory
+  </a>
+  <a
+    class="btn btn-outline-primary"
+    role="button"
+    href="{% url 'edit_loaned_inventory' %}">
+    Edit Loaned Inventory
+  </a>
+  <a
+    class="btn btn-success"
+    role="button"
+    href="{% url 'card_search' %}?add=true">
+    Add Cards
+  </a>
+  <table
+    style="border-collapse: collapse; table-layout: fixed"
+    class="table table-hover">
     <tbody>
       <tr>
-        <td>Inventory Name:</td>
-        <td>{{user_inventory.inventory_name}}</td>
+        <th>Inventory Name:</th>
+        <td>{{user.inventory.inventory_name}}</td>
+        <th>Current Status:</th>
+        <td>{{user.inventory.inventory_view_status | displayEnum}}</td>
       </tr>
       <tr>
-        <td>Current Status:</td>
-        <td>{{user_inventory.inventory_view_status | displayEnum}}</td>
-      </tr>
-      <tr>
-        <td colspan="2">
-          <input id="checkbox" name="checkbox" style="position: relative; top: 1px" type="checkbox" checked
-            onclick="disableEnableImages()">
-          <label style="padding-left: 5px;" for="checkbox">
-            Show images
-          </label>
+        <th>Loaned Inventory Name:</th>
+        <td>{{user.loaned_inventory.loaned_inventory_name}}</td>
+        <th>Loaned Inventory Status:</th>
+        <td>
+          {{user.loaned_inventory.loaned_inventory_view_status | displayEnum}}
         </td>
-      </tr>
-      <tr>
-        <td>Cards in Inventory:</td>
       </tr>
     </tbody>
   </table>
-  <table style="border-collapse: separate; border-spacing: 3px;">
+  <table
+    style="border-collapse: collapse; table-layout: fixed"
+    class="table table-hover">
     <thead>
+      <tr class="sticky-top mt-auto py-3 bg-light" style="top: 110px">
+        <th colspan="9">
+          <input
+            id="imagesCheckbox"
+            name="imagesCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableEnableImages()" />
+          <label
+            for="imagesCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show images
+          </label>
+          <input
+            id="textCheckbox"
+            name="textCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableText()" />
+          <label
+            for="textCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show text
+          </label>
+        </th>
+      </tr>
       <tr>
+        <th>Status</th>
         <th>Name</th>
         <th>Status</th>
         <th>Rarity</th>
@@ -59,34 +109,91 @@
         <th>Cost</th>
         <th>Color</th>
         <th>Type</th>
-        <th># of Cards</th>
       </tr>
     </thead>
     <tbody>
-      {% for card in user_inventory.consolidated_cards %}
-      <tr>
+      {% for card in user.inventory.card_set.all %}
+      <tr class="skip-border detail-row">
+        <td>Owned</td>
         <td>{{card.card_name}}</td>
-        <td>{{card.card_status | displayEnum}}</td>
+        <td class="status">{{card.card_status | displayEnum}}</td>
         <td>{{card.card_rarity}}</td>
         <td>{{card.card_set}}</td>
         <td>{{card.card_cost}}</td>
         <td>{{card.card_color}}</td>
-        <td>{{card.card_type}}</td>
-        <td>{{card.count}}</td>
+        <td>{{card.card_type.strip|default_if_none:"Empty"}}</td>
+        <td>
+          <a
+            id="{{card.pk}}"
+            name="action"
+            class="btn btn-danger"
+            role="button"
+            href="#">
+            Delete
+          </a>
+        </td>
       </tr>
-      <tr>
-        <th>Text: </th>
-        <td colspan="7">
-          <div style="display: inline-block; vertical-align: top; width: calc(100% - 330px);">
-            <label style="vertical-align: top;">{{card.card_text}}</label>
+      <tr class="text-row">
+        <th>Text:</th>
+        <td colspan="8">
+          <div
+            name="card_text"
+            class="card-image-and-text"
+            style="display: inline-block; vertical-align: top">
+            <label style="vertical-align: top">{{card.card_text}}</label>
           </div>
-          <div style="display: inline-block;">
-            <img id="{{ forloop.counter0 }}img" src="{{ card.card_img_url }}"
-              style="width: 250px; padding-bottom: 20px;">
+          <div style="display: inline-block">
+            <img
+              name="image"
+              src="{{ card.card_img_url }}"
+              style="width: 250px; padding-bottom: 20px" />
           </div>
         </td>
       </tr>
       {% endfor %}
+      <!-- prettier-ignore -->
+      {% for loan_request in user.loaned_inventory.loan_request_set.all %}
+      <!-- prettier-ignore -->
+      {% for loaned_card in loan_request.loaned_card_set.all %}
+      <tr class="skip-border detail-row">
+        <td>
+          {{loan_request.loan_request_status|displayEnum}}
+          <!-- prettier-ignore -->
+          {% if loan_request.loan_request_status == 'RETURNED' %}
+          <br />
+          <!-- prettier-ignore -->
+          {{loaned_card.returned_date|date:"SHORT_DATE_FORMAT"}}
+          <!-- prettier-ignore -->
+          {% endif %}
+        </td>
+        <td>{{loaned_card.card.card_name}}</td>
+        <td class="status">{{loaned_card.card.card_status | displayEnum}}</td>
+        <td>{{loaned_card.card.card_rarity}}</td>
+        <td>{{loaned_card.card.card_set}}</td>
+        <td>{{loaned_card.card.card_cost}}</td>
+        <td>{{loaned_card.card.card_color}}</td>
+        <td>{{loaned_card.card.card_type.strip|default_if_none:"Empty"}}</td>
+      </tr>
+      <tr class="text-row">
+        <th>Text:</th>
+        <td colspan="7">
+          <div
+            name="card_text"
+            class="card-image-and-text"
+            style="display: inline-block; vertical-align: top">
+            <label style="vertical-align: top"
+              >{{loaned_card.card.card_text}}</label
+            >
+          </div>
+          <div style="display: inline-block">
+            <img
+              name="image"
+              src="{{ loaned_card.card.card_img_url }}"
+              style="width: 250px; padding-bottom: 20px" />
+          </div>
+        </td>
+      </tr>
+      {% endfor %} {% endfor %}
     </tbody>
   </table>
 </div>

@@ -1,0 +1,76 @@
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
+{% block title %}Public Inventories{% endblock title %}
+<!-- prettier-ignore -->
+{% block content %}
+<div
+  class="h-100 p-5 bg-light border rounded-3"
+  style="margin: auto; width: 75%; padding: 2rem">
+  <table
+    style="border-collapse: collapse; table-layout: unset"
+    class="table table-hover">
+    <thead>
+      <tr>
+        <th colspan="7">Inventories</th>
+      </tr>
+      <tr>
+        <th>Inventory name</th>
+        <th>Owner name</th>
+        <th>Total cards #</th>
+        <th>Unused cards #</th>
+        <th>In deck cards #</th>
+        <th>Available cards #</th>
+        <th>Loaned cards #</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inventory in inventory_set %}
+      <tr>
+        <td>
+          <a
+            class="link-info"
+            href="{% url 'card_view' %}?requester_type=Inventory&requester_id={{inventory.pk}}">
+            {{inventory.inventory_name}}
+          </a>
+        </td>
+        <td>{{inventory.inventory_owner.username}}</td>
+        <td>{{inventory.total_card_count}}</td>
+        <td>{{inventory.unused_count}}</td>
+        <td>{{inventory.in_deck_count}}</td>
+        <td>{{inventory.available_for_loan_count}}</td>
+        <td>{{inventory.loaned_count}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th colspan="7">Loaned Inventories</th>
+      </tr>
+      <tr>
+        <th>Inventory name</th>
+        <th>Owner name</th>
+        <th>Total cards #</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      {% for inventory in loaned_set %}
+      <tr>
+        <td>
+          <a
+            class="link-info"
+            href="{% url 'card_view' %}?requester_type=Loaned_Inventory&requester_id={{inventory.pk}}">
+            {{inventory.loaned_inventory_name}}
+          </a>
+        </td>
+        <td>{{inventory.loaned_inventory_owner.username}}</td>
+        <td>{{inventory.total_card_count}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

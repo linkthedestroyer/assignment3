@@ -45,15 +45,15 @@ class Command(BaseCommand):
             card_data = json.load(file_object)
             already_inserted = []
             for x in range(0, 1000):
-                random_index = random.randint(0, len(card_data["card_data"]))
-                random_card = card_data["card_data"][random_index]
+                random_index = random.randint(0, len(card_data["data_list"]))
+                random_card = card_data["data_list"][random_index]
                 while (
                     random_index in already_inserted
                     or random_card["set_type"] == "memorabilia"
                     or random_card["layout"] == "token"
                 ):
-                    random_index = random.randint(0, len(card_data["card_data"]))
-                    random_card = card_data["card_data"][random_index]
+                    random_index = random.randint(0, len(card_data["data_list"]))
+                    random_card = card_data["data_list"][random_index]
 
                 already_inserted.append(random_index)
                 try:

@@ -7,7 +7,9 @@ from users.models import Magic_User
 
 class Inventory(models.Model):
     inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
-    inventory_owner = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
+    inventory_owner = models.OneToOneField(
+        get_user_model(), null=True, on_delete=models.CASCADE, related_name='inventory'
+    )
     inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
@@ -75,7 +77,9 @@ class Card(models.Model):
 
 class Loaned_Inventory(models.Model):
     loaned_inventory_name = models.CharField(max_length=50, blank=False, null=False, default=" ")
-    loaned_inventory_owner = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
+    loaned_inventory_owner = models.OneToOneField(
+        get_user_model(), null=True, on_delete=models.CASCADE, related_name='loaned_inventory'
+    )
     loaned_inventory_view_status = models.CharField(
         max_length=50, blank=False, null=False, default="PUBLIC", choices=(("PUBLIC", "Public"), ("PRIVATE", "Private"))
     )
@@ -103,9 +107,14 @@ class Loan_Request(models.Model):
         blank=False,
         null=False,
         default="REQUESTED",
-        choices=(("REQUESTED", "Requested"), ("ACCEPTED", "Accepted"), ("DECLINED", "Declined")),
+        choices=(
+            ("REQUESTED", "Requested"),
+            ("ACCEPTED", "Accepted"),
+            ("DECLINED", "Declined"),
+            ('RECALLED', 'Recalled'),
+            ('RETURNED', 'Returned'),
+        ),
     )
-
 
     class Meta:
         verbose_name_plural = "Loan Requests"
@@ -131,13 +140,9 @@ class Loaned_Card(models.Model):
 
     def __str__(self):
         try:
-            return "Loaned_Card=[card={},inventory={},loan_request={},loaned_inventory={},returned_date={}]".format(
-                self.card, self.inventory, self.loan_request, self.loaned_inventory, self.returned_date
-            )
+            return "Loaned_Card=[card={},loan_request={}]".format(self.card, self.loan_request)
         except:
-            return "Loaned_Card=[card={},inventory={},loan_request={},loaned_inventory={},returned_date={}]".format(
-                self.card_id, self.inventory_id, self.loan_request_id, self.loaned_inventory_id, self.returned_date
-            )
+            return "Loaned_Card=[card={},loan_request={}]".format(self.card_id, self.loan_request_id)
 
 
 @receiver(post_save, sender=Magic_User)

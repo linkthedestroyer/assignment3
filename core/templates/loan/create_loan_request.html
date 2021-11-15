@@ -1,0 +1,177 @@
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
+{% block title %}Create Loan Request{% endblock title %}
+<!-- prettier-ignore -->
+{% block content %}
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const status = "{{loanee_inventory.loaned_inventory_view_status}}";
+    if (status === "PUBLIC") {
+      $("#public").attr("selected", "selected");
+    } else if (status === "PRIVATE") {
+      $("#private").attr("selected", "selected");
+    }
+  });
+</script>
+<form action="" method="post">
+  {% csrf_token %}
+  <div
+    class="h-100 p-5 bg-light border rounded-3"
+    style="margin: auto; width: 75%; padding: 2rem">
+    <h3 class="display-9">Create Loan Request</h3>
+    <div
+      class="sticky-top mt-auto py-3 bg-light"
+      style="top: 110px; width: 100%; height: auto">
+      <input
+        id="imagesCheckbox"
+        name="imagesCheckbox"
+        style="position: relative; top: 1px"
+        type="checkbox"
+        checked
+        onclick="disableEnableImages()" />
+      <label
+        for="imagesCheckbox"
+        style="padding-left: 5px; margin-right: 10px; font-weight: bold">
+        Show images
+      </label>
+      <input
+        id="textCheckbox"
+        name="textCheckbox"
+        style="position: relative; top: 1px"
+        type="checkbox"
+        checked
+        onclick="disableText()" />
+      <label
+        for="textCheckbox"
+        style="padding-left: 5px; margin-right: 10px; font-weight: bold">
+        Show text
+      </label>
+    </div>
+    <table
+      style="border-collapse: collapse; table-layout: fixed"
+      class="table table-hover">
+      <thead>
+        <tr>
+          <th style="vertical-align: middle">
+            Your loaned cards inventory name:
+          </th>
+          <td>
+            <input
+              class="form-control"
+              type="text"
+              name="loaned_inventory_name"
+              value="{{loanee_inventory.loaned_inventory_name}}" />
+          </td>
+        </tr>
+        <tr>
+          <th style="vertical-align: middle">
+            Your loaned cards inventory status:
+          </th>
+          <td>
+            <select
+              class="form-control"
+              id="status"
+              name="loaned_inventory_view_status"
+              value="{{loanee_inventory.loaned_inventory_view_status}}">
+              <option></option>
+              <option id="public" value="PUBLIC">Public</option>
+              <option id="private" value="PRIVATE">Private</option>
+            </select>
+          </td>
+        </tr>
+      </thead>
+    </table>
+    {% for loan_request in request_list %}
+    <table
+      style="border-collapse: collapse; table-layout: fixed"
+      class="table table-hover">
+      <thead>
+        <tr>
+          <th colspan="7">
+            Loan request to
+            <!-- prettier-ignore -->
+            {{ loan_request.loaner_inventory.inventory_owner.username }}
+          </th>
+        </tr>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Rarity</th>
+          <th>Set</th>
+          <th>Cost</th>
+          <th>Color</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for loaned_card in loan_request.not_saved_loaned_cards %}
+        <tr class="skip-border detail-row">
+          <td>{{loaned_card.card.card_name}}</td>
+          <td>{{loaned_card.card.card_status | displayEnum}}</td>
+          <td>{{loaned_card.card.card_rarity}}</td>
+          <td>{{loaned_card.card.card_set}}</td>
+          <td>{{loaned_card.card.card_cost}}</td>
+          <td>{{loaned_card.card.card_color}}</td>
+          <td>{{loaned_card.card.card_type.strip|default_if_none:"Empty"}}</td>
+        </tr>
+        <tr class="text-row">
+          <th>Text:</th>
+          <td colspan="6">
+            <div
+              name="card_text"
+              class="card-image-and-text"
+              style="display: inline-block; vertical-align: top">
+              <label style="vertical-align: top"
+                >{{loaned_card.card.card_text}}</label
+              >
+            </div>
+            <div style="display: inline-block">
+              <img
+                name="image"
+                src="{{ loaned_card.card.card_img_url }}"
+                style="width: 250px; padding-bottom: 20px" />
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+  </div>
+  <footer
+    id="footer"
+    class="footer fixed-bottom mt-auto py-3 bg-light"
+    style="
+      width: calc(75% - 15px);
+      margin: 0 auto;
+      padding: 5px 2rem 5px 2rem !important;
+      height: auto;
+      border: 1px lightgray solid;
+    ">
+    <div class="container">
+      <button id="submit_loan_requests" class="btn btn-primary" type="submit">
+        Submit
+      </button>
+    </div>
+  </footer>
+  {% for loan_request in request_list %}
+  <input
+    type="hidden"
+    name="{{forloop.counter}}-requestor_id"
+    value="{{loan_request.requestor.pk}}" />
+  <input
+    type="hidden"
+    name="{{forloop.counter}}-loaner_inventory_id"
+    value="{{loan_request.loaner_inventory.pk}}" />
+  <input
+    type="hidden"
+    name="{{forloop.counter}}-loanee_inventory_id"
+    value="{{loan_request.loanee_inventory.pk}}" />
+  {% for loaned_card in loan_request.not_saved_loaned_cards %}
+  <input
+    type="hidden"
+    name="{{forloop.parentloop.counter}}-{{forloop.counter}}-card_id"
+    value="{{loaned_card.card.pk}}" />
+  {% endfor %} {% endfor %}
+</form>
+{% endblock content %}

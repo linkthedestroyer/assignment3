@@ -1,0 +1,141 @@
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
+{% block title %}View Loan Requests{% endblock title %}
+<!-- prettier-ignore -->
+{% block content %}
+<style>
+  td {
+    vertical-align: middle !important;
+  }
+</style>
+<script>
+  $(function () {
+    $("a[name='action']").each((index, element) => {
+      $(element).on("click", function (e) {
+        e.preventDefault(); // cancel the link itself
+        var myForm = document.createElement("form");
+        myForm.action = " "; // the href of the link
+        myForm.method = "POST";
+        // prettier-ignore
+        myForm.innerHTML = '{% csrf_token %}';
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: element.id,
+            name: "loan_request_id",
+          })
+          .appendTo(myForm);
+        document.body.append(myForm);
+        myForm.submit();
+      });
+    });
+  });
+</script>
+<div
+  class="h-100 p-5 bg-light border rounded-3"
+  style="margin: auto; width: 80%; padding: 2rem">
+  <table
+    style="border-collapse: collapse; table-layout: fixed"
+    class="table table-hover">
+    <thead>
+      <tr>
+        <th>Loaner</th>
+        <th>Loanee</th>
+        <th>Status</th>
+        <th>Total cards #</th>
+        <th>View cards</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for loan_request in object_list %}
+      <tr>
+        <td>
+          <!-- prettier-ignore -->
+          {% if loan_request.loaner_inventory.inventory_owner.pk == request.user.pk %}
+          You
+          {% else %}
+          {{ loan_request.loaner_inventory.inventory_owner.username }}
+          {% endif %}
+        </td>
+        <td>
+          <!-- prettier-ignore -->
+          {% if loan_request.loanee_inventory.loaned_inventory_owner.pk == request.user.pk %}
+          You
+          {% else %}
+          {{ loan_request.loanee_inventory.loaned_inventory_owner.username }}
+          {% endif %}
+        </td>
+        <td>{{loan_request.loan_request_status}}</td>
+        <td>{{loan_request.loaned_card_set.count}}</td>
+        <td>
+          <a
+            class="link-info"
+            href="{% url 'card_view' %}?requester_type=Loan_Request&requester_id={{loan_request.pk}}">
+            View cards
+          </a>
+        </td>
+        <td>
+          <!-- prettier-ignore -->
+          {% if loan_request.loaner_inventory.inventory_owner.pk == request.user.pk %}
+          <!-- prettier-ignore -->
+          {% if loan_request.loan_request_status == "REQUESTED" %}
+          <a
+            id="{{loan_request.pk}}_accept"
+            name="action"
+            class="btn btn-success"
+            role="button"
+            href="#">
+            Accept Request
+          </a>
+          <a
+            id="{{loan_request.pk}}_decline"
+            name="action"
+            class="btn btn-danger"
+            role="button"
+            href="#">
+            Decline Request
+          </a>
+          {% endif %}
+          <!-- prettier-ignore -->
+          {% if loan_request.loan_request_status == "ACCEPTED" %}
+          <a
+            id="{{loan_request.pk}}_recall"
+            name="action"
+            class="btn btn-warning"
+            role="button"
+            href="#">
+            Request Recall
+          </a>
+          {% endif %}
+          <!-- prettier-ignore -->
+          {% if loan_request.loan_request_status == "RECALLED" %}
+          <a
+            id="{{loan_request.pk}}_returned"
+            name="action"
+            class="btn btn-info"
+            role="button"
+            href="#">
+            Cards Returned
+          </a>
+          {% endif %} {% endif %}
+          <!-- prettier-ignore -->
+          {% if loan_request.loanee_inventory.loaned_inventory_owner.pk == request.user.pk %}
+          <!-- prettier-ignore -->
+          {% if loan_request.loan_request_status == "ACCEPTED" or loan_request.loan_request_status == "RECALLED" %}
+          <a
+            id="{{loan_request.pk}}_returned"
+            name="action"
+            class="btn btn-info"
+            role="button"
+            href="#">
+            Return Cards
+          </a>
+          {% endif %} {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

@@ -1,0 +1,213 @@
+{% extends 'base.html' %} {% load custom_tags %}
+<!-- prettier-ignore -->
+{% block title %}{{ title }}{% endblock title %}
+<!-- prettier-ignore -->
+{% block content %}
+<style>
+  .status {
+    min-width: 145px;
+  }
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", (event) => {
+    const nodeListOfElements = document.getElementsByName("addCard");
+    const addCards = Array.from(nodeListOfElements);
+    for (const addCard of addCards) {
+      addCard.onchange = () => {
+        checkedAddCheckbox = addCards.find(
+          (addCheckbox) => addCheckbox.checked == true
+        );
+        if (checkedAddCheckbox) {
+          $("#footer").removeClass("hide");
+        } else {
+          $("#footer").addClass("hide");
+        }
+      };
+    }
+    $($("#add_card")[0]).on("click", function (e) {
+      e.preventDefault(); // cancel the link itself
+      var myForm = document.createElement("form");
+      myForm.action = ""; // the href of the link
+      myForm.method = "POST";
+      // prettier-ignore
+      myForm.innerHTML = '{% csrf_token %}';
+      // {% for card in object_list %}
+      if (
+        addCards
+          .filter((element) => element.checked)
+          .map((element) => element.id)
+          .indexOf("{{ forloop.counter0 }}_Add") >= 0
+      ) {
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_name|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_name",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_rarity|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_rarity",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_set|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_set",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_cost|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_cost",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_color|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_color",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_type.strip|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_type",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_text|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_text",
+          })
+          .appendTo(myForm);
+        $("<input>")
+          .attr({
+            type: "hidden",
+            value: "{{card.card_img_url|sanitize_for_js}}",
+            name: "{{ forloop.counter0 }}_card_img_url",
+          })
+          .appendTo(myForm);
+      }
+      // {% endfor %}
+      document.body.append(myForm);
+      myForm.submit();
+    });
+  });
+</script>
+<div
+  class="h-100 p-5 bg-light border rounded-3"
+  style="margin: auto; width: 75%; padding: 2rem">
+  <h3 class="display-9">{{ title }}</h3>
+  <table
+    style="border-collapse: collapse; table-layout: fixed"
+    class="table table-hover">
+    <thead>
+      <tr class="sticky-top mt-auto py-3 bg-light" style="top: 110px">
+        <th colspan="7">
+          <input
+            id="imagesCheckbox"
+            name="imagesCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableEnableImages()" />
+          <label
+            for="imagesCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show images
+          </label>
+          <input
+            id="textCheckbox"
+            name="textCheckbox"
+            style="position: relative; top: 1px"
+            type="checkbox"
+            checked
+            onclick="disableText()" />
+          <label
+            for="textCheckbox"
+            style="padding-left: 5px; margin-right: 10px">
+            Show text
+          </label>
+          <!--
+          <input id="onlyImagesCheckbox" name="onlyImagesCheckbox" style="position: relative; top: 1px" type="checkbox"
+            onclick="enableImagesOnly()">
+          <label for="onlyImagesCheckbox" style="padding-left: 5px;">
+            Only images
+          </label>-->
+        </th>
+      </tr>
+      <tr>
+        <th>Add</th>
+        <th>Name</th>
+        <th>Rarity</th>
+        <th>Set</th>
+        <th>Cost</th>
+        <th>Color</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for card in object_list %}
+      <tr
+        class="skip-border detail-row cursor-pointer"
+        onclick="checkrow('{{forloop.counter0}}_Add')">
+        <td>
+          <!-- prettier-ignore -->
+          <input
+            onclick="event.stopPropagation();"
+            type="checkbox"
+            id="{{ forloop.counter0 }}_Add"
+            name="addCard" />
+        </td>
+        <td>{{card.card_name}}</td>
+        <td>{{card.card_rarity}}</td>
+        <td>{{card.card_set}}</td>
+        <td>{{card.card_cost}}</td>
+        <td>{{card.card_color}}</td>
+        <td>{{card.card_type.strip|default_if_none:"Empty"}}</td>
+      </tr>
+      <tr class="text-row">
+        <th>Text:</th>
+        <td colspan="6">
+          <div
+            name="card_text"
+            class="card-image-and-text"
+            style="display: inline-block; vertical-align: top">
+            <label style="vertical-align: top">{{card.card_text}}</label>
+          </div>
+          <div style="display: inline-block">
+            <img
+              name="image"
+              src="{{ card.card_img_url }}"
+              style="width: 250px; padding-bottom: 20px" />
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<footer
+  id="footer"
+  class="footer fixed-bottom mt-auto py-3 bg-light hide"
+  style="
+    width: calc(75% - 15px);
+    margin: 0 auto;
+    padding: 5px 2rem 5px 2rem !important;
+    height: auto;
+    border: 1px lightgray solid;
+  ">
+  <div class="container">
+    <a id="add_card" class="btn btn-primary" role="button" href="#">
+      ADD CARDS TO INVENTORY
+    </a>
+  </div>
+</footer>
+{% endblock content %}
