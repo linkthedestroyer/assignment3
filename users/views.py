@@ -1,3 +1,4 @@
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from django.views.generic.edit import CreateView
@@ -15,9 +16,9 @@ class CreateMagicUserView(CreateView):
 
     def dispatch(self, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return reverse("home")
+            return HttpResponseRedirect(reverse("home"))
         else:
             return super().dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse("login") + "?success=true"
+        return reverse("login") + "?success='true'"
